@@ -1,21 +1,28 @@
 import flask
-from sparkpost import SparkPost
 from flask import request, jsonify
+import smtplib, ssl
+from email.mime.text import MIMEText
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 
 def send_email(recipient, subject, body):
-    #here paste the received sparkpost configuration key
-    sp = SparkPost('<<here paste the key>>')
-    response = sp.transmissions.send(
-        use_sandbox=True,
-        recipients=[recipient],
-        html=body,
-        from_email='projekt.weby2@sparkpostbox.com',
-        subject=subject
-    )
-    return response
+  fromx = 'projekt.weby2@gmail.com'
+  to  = recipient
+  password = "<<here paste the password>>"
+  msg = MIMEText(body)
+  msg['Subject'] = subject
+  msg['From'] = fromx
+  msg['To'] = to
+
+  server = smtplib.SMTP('smtp.gmail.com:587')
+  server.starttls()
+  server.ehlo()
+  server.login(fromx, password)
+  server.sendmail(fromx, to, msg.as_string())
+  server.quit()
+
+  return "Success: requested email has been sent"
 
 @app.route('/sendemail', methods = ['POST'])
 def send_email_handler():
