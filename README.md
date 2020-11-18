@@ -25,3 +25,19 @@ Pod adres `http://0.0.0.0:33302/sendemail` wysyłamy zapytanie metodą POST o cz
 ```
 
 Aby przetestować działanie możesz wysłać maila do samego siebie.
+
+Przykładowo kod w Pythonie wysyłający takie zapytanie wygląda następująco:
+```
+import requests
+import json
+
+address = "http://0.0.0.0:33302/sendemail"
+data = {
+	"recipient": "<<twoj adres email>>",
+	"subject": "Temat maila",
+	"body": "Tresc maila"
+}
+data_json = json.dumps(data)
+response = requests.post(address, json=data_json)
+print(response.content)
+```
